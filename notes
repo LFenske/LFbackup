@@ -1,0 +1,41 @@
+create list of files to check
+  multiple backup sets and schedules
+create list of files to backup
+  option to not filter, for periodic check
+backends
+  local disk
+  remote through https
+  Amazon S3
+  Google Cloud Storage
+end-to-end encryption
+show progress of files backing up
+web page GUI
+  main server
+  local client
+  any disk store
+
+plugin types
+  front-end
+    Linux
+    MSWin
+    Apple
+  hash
+    sha1
+  compress
+    null
+    gzip
+  encrypt
+    null
+    gpg
+  database
+    tree in file system
+      files in mirrored tree structure, each file has history with (date stored, stat, hash)
+      directories in mirrored tree structure, each directory ends in .d, file with info
+    sqlite
+    mysql
+    postgresql
+  datastore (put, get, mark, delete all unmarked)
+    three level file system tree with 256 per level, file name is hash
+    Amazon S3 object store
+    Google Cloud Storage: ?
+
