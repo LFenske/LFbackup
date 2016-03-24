@@ -14,10 +14,14 @@ class Hash_sha1(Hash):
     def digest(self):
         return self.hashmethod.digest()
 
-    def hexdigest(self):
-        return self.hashmethod.hexdigest()
-
 if __name__ == "__main__":
     h = Hash_sha1()
     h.update(b"a")
     print(h.hexdigest())
+    assert(h.hexdigest() == "86f7e437faa5a7fce15d1ddcb9eaeaea377667b8")
+
+    h = Hash_sha1()
+    h.update(b"c")
+    h.update(b"def")
+    print(h.hexdigest())
+    assert(h.hexdigest() == "25bf58983b8ab103fa88b4032503fc8b65651ca1")

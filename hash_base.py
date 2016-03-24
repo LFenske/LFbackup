@@ -15,6 +15,5 @@ class Hash(object, metaclass=abc.ABCMeta):
     def digest(self):
         return None
 
-    @abc.abstractmethod
     def hexdigest(self):
-        return None
+        return ''.join(map(lambda x: '%.2x' % x, self.digest()))

@@ -16,4 +16,5 @@ if __name__ == "__main__":
     c = Compress_none()
     en = c.  compress(b"a")
     de = c.decompress(en)
+    print(de)
     assert(de == b"a")

@@ -16,4 +16,5 @@ if __name__ == "__main__":
     c = Crypt_none(None)
     en = c.encrypt(b"a")
     de = c.decrypt(en)
+    print(de)
     assert(de == b"a")
