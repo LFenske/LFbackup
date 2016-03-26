@@ -3,7 +3,7 @@
 from crypt_base import Crypt
 
 class Crypt_none(Crypt):
-    def __init__(self, key):
+    def __init__(self, key1):
         super().__init__()
     
     def encrypt(self, s):

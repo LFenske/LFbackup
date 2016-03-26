@@ -8,28 +8,28 @@ class DataStore(object, metaclass=abc.ABCMeta):
         None
     
     @abc.abstractmethod
-    def get(self, key):
+    def get(self, key1):
         """
-        Retrieve an object by key.
+        Retrieve an object by key1.
         """
         return None
     
     @abc.abstractmethod
-    def put(self, key, val):
+    def put(self, key1, val1):
         """
         Store an object.
         """
         None
     
     @abc.abstractmethod
-    def check(self, key):
+    def check(self, key1):
         """
-        Return boolean for existence of key.
+        Return boolean for existence of key1.
         """
         None
 
     @abc.abstractmethod
-    def delete(self, key):
+    def delete(self, key1):
         """
         Remove an object forever.
         """
@@ -43,7 +43,7 @@ class DataStore(object, metaclass=abc.ABCMeta):
         None
     
     @abc.abstractmethod
-    def mark_mark(self, key):
+    def mark_mark(self, key1):
         """
         Mark this object as in-use.
         """
