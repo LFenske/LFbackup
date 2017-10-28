@@ -2,18 +2,18 @@
 
 from crypt_base import Crypt
 
-class Crypt_none(Crypt):
+class Crypt_None(Crypt):
     def __init__(self, key1):
         super().__init__()
-    
+
     def encrypt(self, s):
         return s
-    
+
     def decrypt(self, s):
         return s
 
 if __name__ == "__main__":
-    c = Crypt_none(None)
+    c = Crypt_None(None)
     en = c.encrypt(b"a")
     de = c.decrypt(en)
     print(de)
