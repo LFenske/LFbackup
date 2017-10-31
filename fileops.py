@@ -6,7 +6,7 @@ import sys
 
 class FileOps(object):
 
-    blocksize = 1*1024
+    blocksize = 64*1024
     # os.supports_follow_symlinks is only in Python 3.3 and later.
     fsl_chmod = False if os.chmod in os.supports_follow_symlinks else True
     fsl_chown = False if os.chown in os.supports_follow_symlinks else True
@@ -55,6 +55,7 @@ class FileOps(object):
             pass  #TODO
         elif stat.S_ISSOCK(fmt):
             pass  #TODO
+        #TODO Should these be set on the linkee if we can't set the link?
         os.chmod(desname, mode, follow_symlinks=self.fsl_chmod)
         os.chown(desname, stats.st_uid, stats.st_gid, follow_symlinks=self.fsl_chown)
         os.utime(desname, ns=(stats.st_atime_ns, stats.st_mtime_ns), follow_symlinks=self.fsl_utime)
@@ -132,7 +133,10 @@ class FileOps(object):
                     return None
             hsh = hashlists[curdepth][hashpointers[curdepth]:hashpointers[curdepth]+self.hashfact().hashlen()]
             hashpointers[curdepth] += self.hashfact().hashlen()
-            return ds.get(hsh)
+            bufe = ds.get(hsh)
+            bufc = self.crypt.decrypt(bufe)
+            buf  = self.compress.decompress(bufc)
+            return buf
 
         hashlists = [b""] * depth
         hashlists.append(hsh)
@@ -158,15 +162,19 @@ if __name__ == "__main__":
     import datastore_tree
     import compress_none
     import crypt_none
+    import compress_gzip
+    import crypt_aes
     import hash_sha1
 
     basepath = "/tmp/testtree"
-    key      = "12345678"
+    key      = b"12345678"
 
     dm       = datameta_tree.DataMeta_Tree(basepath)
     ds       = datastore_tree.DataStore_Tree(basepath)
-    compress = compress_none.Compress_None()
-    crypt    = crypt_none.Crypt_None(key)
+#     compress = compress_none.Compress_None()
+#     crypt    = crypt_none.Crypt_None(key)
+    compress = compress_gzip.Compress_Gzip()
+    crypt    = crypt_aes.Crypt_AES(key)
     hashfact = hash_sha1.Hash_SHA1
     fo = FileOps(dm, ds, compress, crypt, hashfact)
 
