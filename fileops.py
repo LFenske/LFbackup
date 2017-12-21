@@ -3,6 +3,7 @@
 import os.path
 import stat
 import sys
+import shutil
 
 class FileOps(object):
 
@@ -155,6 +156,7 @@ class FileOps(object):
         hashlists = [b""] * depth
         hashlists.append(hsh)
         hashpointers = [0] * (depth+1)
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, "wb") as f:  #TODO pass f in
             while True:
                 block = __get_block(0)
@@ -192,8 +194,26 @@ if __name__ == "__main__":
     hashfact = hash_sha1.Hash_SHA1
     fo = FileOps(dm, ds, compress, crypt, hashfact)
 
-    fo.backup("qd")
-    fo.backup("fileops.py")
-    fo.restore("fileops.py", "q1")
-    fo.backup("initrd.img-3.19.0-84-generic")
-    fo.restore("initrd.img-3.19.0-84-generic", "q")
+    try:
+        shutil.rmtree("testrestore")
+    except:
+        pass
+    os.mkdir("testrestore")
+    os.chdir("testbackup")
+    for walker in os.walk("."):
+        print("backup walker =", walker)
+        for f in walker[1]:
+            fo.backup(os.path.join(walker[0], f))
+            pass
+        for f in walker[2]:
+            fo.backup(os.path.join(walker[0], f))
+            pass
+
+    for walker in os.walk(".", topdown=False):
+        print("restore walker =", walker)
+        for f in walker[1]:
+            fo.restore(os.path.join(walker[0], f), os.path.join("..", "testrestore", walker[0], f))
+        for f in walker[2]:
+            fo.restore(os.path.join(walker[0], f), os.path.join("..", "testrestore", walker[0], f))
+    os.chdir("..")
+

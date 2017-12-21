@@ -17,7 +17,7 @@ class DataMeta_Tree(DataMeta_Base):
 
     def put(self, filename, is_dir, stats, depth, hsh):
         (fdir, fpath, ddir, dpath) = self.__paths(filename)
-        if is_dir: (dire, path) = (ddir, dpath)
+        if is_dir: (dire, path) = (ddir, dpath); os.makedirs(fpath, exist_ok=True)
         else     : (dire, path) = (fdir, fpath)
         os.makedirs(dire, exist_ok=True)
         with open(path, "wb") as f:
@@ -27,12 +27,12 @@ class DataMeta_Tree(DataMeta_Base):
         (fdir, fpath, ddir, dpath) = self.__paths(filename)
         fdir = fdir  # Get rid of warning.
         ddir = ddir  # Get rid of warning.
-        if os.path.exists(fpath):
-            path = fpath
-            is_dir = False
-        elif os.path.exists(dpath):
+        if   os.path.exists(dpath):
             path = dpath
             is_dir = True
+        elif os.path.exists(fpath):
+            path = fpath
+            is_dir = False
         else:
             return None
         print("path =", path)
