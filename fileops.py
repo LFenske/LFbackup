@@ -20,6 +20,16 @@ class FileOps(object):
         self.crypt    = crypt     # instance of Crypt
         self.hashfact = hashfact  # instance of Hash
 
+    def __has_data(self, stats):
+        fmt  = stat.S_IFMT (stats.st_mode)
+        if stat.S_ISDIR (fmt): return False
+        if stat.S_ISCHR (fmt): return False
+        if stat.S_ISBLK (fmt): return False
+        if stat.S_ISREG (fmt): return True
+        if stat.S_ISFIFO(fmt): return False
+        if stat.S_ISLNK (fmt): return True
+        if stat.S_ISSOCK(fmt): return False
+
     def backup(self, filename):
         """
         Backup a file; data and metadata.
@@ -27,8 +37,9 @@ class FileOps(object):
         stats = os.stat(filename, follow_symlinks=self.fsl_stat)
         print(filename)
         print(stats)
-        is_dir = os.path.isdir(filename)  #TODO What about symlinks, sockets, fifos, device files?
-        depth, hsh = (0,0) if is_dir else self.__put_data(filename)
+        is_dir = stat.S_ISDIR(stats.st_mode)
+        #TODO os.readlink
+        depth, hsh = (0,0) if not self.__has_data(stats) else self.__put_data(filename)
         print(depth, hsh)
         self.dm.put(filename, is_dir, stats, depth, hsh)
 
@@ -42,16 +53,19 @@ class FileOps(object):
         mode = stat.S_IMODE(stats.st_mode)
         if   stat.S_ISREG (fmt):
             self.__get_data(desname, depth, hsh)
-            # st_mode
-            # st_nlink  restore hard links
-            # st_uid
-            # st_gid
-            # st_atime, st_mtime, st_atime_ns, st_mtime_ns
+            #TODO st_nlink  restore hard links
         elif stat.S_ISBLK (fmt) or stat.S_ISCHR (fmt) or stat.S_ISFIFO(fmt):
             os.mknod(desname, mode=stats.st_mode, device=stats.st_rdev)  #TODO st_rdev might not exist
         elif stat.S_ISDIR (fmt):
             os.makedirs(desname, mode=mode, exist_ok=True)
         elif stat.S_ISLNK (fmt):
+            # Create a temporary file, restore the contents of the link, read it, create the link.
+            os.remove(desname)
+            self.__get_data(desname, depth, hsh)  #TODO get data into string stream
+            with open(desname, "rb") as f:
+                linkdata = f.read()
+            os.remove(desname)
+            os.symlink(linkdata, desname, target_is_directory=stat.S_ISDIR(fmt))
             pass  #TODO
         elif stat.S_ISSOCK(fmt):
             pass  #TODO
@@ -74,7 +88,7 @@ class FileOps(object):
         Return depth, hash.
         """
         groups = []
-        with open(filename, "rb") as f:
+        with open(filename, "rb") as f:  #TODO pass in f instead of filename
             while True:
                 buf = f.read(self.blocksize)
                 if buf:
@@ -141,7 +155,7 @@ class FileOps(object):
         hashlists = [b""] * depth
         hashlists.append(hsh)
         hashpointers = [0] * (depth+1)
-        with open(filename, "wb") as f:
+        with open(filename, "wb") as f:  #TODO pass f in
             while True:
                 block = __get_block(0)
                 if block is None:
@@ -160,8 +174,8 @@ class FileOps(object):
 if __name__ == "__main__":
     import datameta_tree
     import datastore_tree
-    import compress_none
-    import crypt_none
+#    import compress_none
+#    import crypt_none
     import compress_gzip
     import crypt_aes
     import hash_sha1
