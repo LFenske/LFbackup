@@ -175,6 +175,7 @@ class FileOps(object):
 
 if __name__ == "__main__":
     import datameta_tree
+    import datameta_sqlite
     import datastore_tree
 #    import compress_none
 #    import crypt_none
@@ -185,7 +186,8 @@ if __name__ == "__main__":
     basepath = "/tmp/testtree"
     key      = b"12345678"
 
-    dm       = datameta_tree.DataMeta_Tree(basepath)
+    #dm       = datameta_tree.DataMeta_Tree(basepath)
+    dm       = datameta_sqlite.DataMeta_Sqlite(basepath+".db")
     ds       = datastore_tree.DataStore_Tree(basepath)
 #     compress = compress_none.Compress_None()
 #     crypt    = crypt_none.Crypt_None(key)
