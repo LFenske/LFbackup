@@ -30,7 +30,6 @@ class DataMeta_Sqlite(DataMeta_Base):
                      (filename, stats.st_ino, stats.st_dev, pickle.dumps((stats, depth, hsh))))
         self.conn.commit()
 
-
     def get(self, filename):
         curs = self.conn.cursor()
         curs.execute("SELECT pickle FROM stats WHERE filename IS ?", (filename,))

@@ -44,10 +44,12 @@ class FileOps(object):
         print(depth, hsh)
         self.dm.put(filename, is_dir, stats, depth, hsh)
 
-    def restore(self, filename, desname):
+    def restore(self, filename, desname=None):
         """
         Restore a file; data and metadata.
         """
+        if not desname:
+            desname = filename
         (is_dir, stats, depth, hsh) = self.dm.get(filename)
         is_dir=is_dir
         fmt  = stat.S_IFMT (stats.st_mode)
@@ -148,7 +150,7 @@ class FileOps(object):
                     return None
             hsh = hashlists[curdepth][hashpointers[curdepth]:hashpointers[curdepth]+self.hashfact().hashlen()]
             hashpointers[curdepth] += self.hashfact().hashlen()
-            bufe = ds.get(hsh)
+            bufe = self.ds.get(hsh)
             bufc = self.crypt.decrypt(bufe)
             buf  = self.compress.decompress(bufc)
             return buf
