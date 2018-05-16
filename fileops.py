@@ -7,7 +7,7 @@ import shutil
 
 class FileOps(object):
 
-    blocksize = 64*1024
+    blocksize = 1024*1024
     # os.supports_follow_symlinks is only in Python 3.3 and later.
     fsl_chmod = False if os.chmod in os.supports_follow_symlinks else True
     fsl_chown = False if os.chown in os.supports_follow_symlinks else True
@@ -50,7 +50,8 @@ class FileOps(object):
         """
         if not desname:
             desname = filename
-        (is_dir, stats, depth, hsh) = self.dm.get(filename)
+        (is_dir, current) = self.dm.get(filename)
+        (stats, depth, hsh, time_first, time_last) = current[0]
         is_dir=is_dir
         fmt  = stat.S_IFMT (stats.st_mode)
         mode = stat.S_IMODE(stats.st_mode)
@@ -116,6 +117,9 @@ class FileOps(object):
         # flush
         gnum = 0
         hsh = b""
+        if len(groups) == 0:
+            # 0-length file
+            return 0, 0
         while True:
             if len(groups) <= gnum:
                 groups.append(b"")
@@ -160,6 +164,9 @@ class FileOps(object):
         hashpointers = [0] * (depth+1)
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, "wb") as f:  #TODO pass f in
+            if depth == 0:
+                # 0-length file
+                return
             while True:
                 block = __get_block(0)
                 if block is None:
