@@ -13,9 +13,9 @@ class DataStore_Tree(DataStore):
     __std = 0
     __aux = 1
 
-    def __init__(self, basepath):
-        self.basepath = basepath
-        os.makedirs(basepath, exist_ok=True)
+    def __init__(self, dbfilename):
+        self.basepath = dbfilename
+        os.makedirs(dbfilename, exist_ok=True)
 
     def get(self, key1):
         std, aux = self.__key_to_path(key1)

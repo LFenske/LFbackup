@@ -64,10 +64,14 @@ class FileOps(object):
             os.makedirs(desname, mode=mode, exist_ok=True)
         elif stat.S_ISLNK (fmt):
             # Create a temporary file, restore the contents of the link, read it, create the link.
-            os.remove(desname)
+            try:
+                os.remove(desname)
+            except:
+                pass
             self.__get_data(desname, depth, hsh)  #TODO get data into string stream
             with open(desname, "rb") as f:
                 linkdata = f.read()
+            #print("linkdata '"+str(linkdata)+"'")
             os.remove(desname)
             os.symlink(linkdata, desname, target_is_directory=stat.S_ISDIR(fmt))
             pass  #TODO
@@ -185,7 +189,8 @@ class FileOps(object):
 if __name__ == "__main__":
     import datameta_tree
     import datameta_sqlite
-    import datastore_tree
+#    import datastore_tree
+    import datastore_gdbm
 #    import compress_none
 #    import crypt_none
     import compress_gzip
@@ -197,7 +202,8 @@ if __name__ == "__main__":
 
     #dm       = datameta_tree.DataMeta_Tree(basepath)
     dm       = datameta_sqlite.DataMeta_Sqlite(basepath+".db")
-    ds       = datastore_tree.DataStore_Tree(basepath)
+    #ds       = datastore_tree.DataStore_Tree(basepath)
+    ds       = datastore_gdbm.DataStore_Gdbm(basepath+".gdbm")
 #     compress = compress_none.Compress_None()
 #     crypt    = crypt_none.Crypt_None(key)
     compress = compress_gzip.Compress_Gzip()
