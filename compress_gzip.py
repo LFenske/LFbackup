@@ -4,6 +4,7 @@ from compress_base import Compress
 
 import gzip
 
+
 class Compress_Gzip(Compress):
 
     compresslevel = 9

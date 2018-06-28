@@ -5,6 +5,7 @@ from datastore_base import DataStore
 import os
 import shutil
 
+
 class DataStore_Tree(DataStore):
     """
     Use a tree in the file system to store objects.
@@ -123,4 +124,3 @@ if __name__ == "__main__":
     assert(not ds.check(key1))
     assert(    ds.check(key2))
     assert(ds.get(key2) == val2)
-

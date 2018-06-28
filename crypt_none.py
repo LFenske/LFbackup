@@ -2,6 +2,7 @@
 
 from crypt_base import Crypt
 
+
 class Crypt_None(Crypt):
     def __init__(self, key1):
         super().__init__()

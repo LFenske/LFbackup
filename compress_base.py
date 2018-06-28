@@ -3,6 +3,7 @@ abstract super-class for compression and decompression
 """
 import abc
 
+
 class Compress(object, metaclass=abc.ABCMeta):
     def __init__(self):
         None

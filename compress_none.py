@@ -2,6 +2,7 @@
 
 from compress_base import Compress
 
+
 class Compress_None(Compress):
     def __init__(self):
         super().__init__()

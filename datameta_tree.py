@@ -5,6 +5,7 @@ from datameta_base import DataMeta_Base
 import os.path
 import pickle
 
+
 class DataMeta_Tree(DataMeta_Base):
 
     filepath = "file"
@@ -17,8 +18,11 @@ class DataMeta_Tree(DataMeta_Base):
 
     def put(self, filename, is_dir, stats, depth, hsh):
         (fdir, fpath, ddir, dpath) = self.__paths(filename)
-        if is_dir: (dire, path) = (ddir, dpath); os.makedirs(fpath, exist_ok=True)
-        else     : (dire, path) = (fdir, fpath)
+        if is_dir:
+            (dire, path) = (ddir, dpath)
+            os.makedirs(fpath, exist_ok=True)
+        else:
+            (dire, path) = (fdir, fpath)
         os.makedirs(dire, exist_ok=True)
         with open(path, "wb") as f:
             pickle.dump((stats, depth, hsh), f)
@@ -62,4 +66,3 @@ if __name__ == "__main__":
 
     (is_dir, stats, depth, hsh) = dm.get(fn[1:])
     print(is_dir, stats, depth, hsh)
-

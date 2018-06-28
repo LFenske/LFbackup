@@ -5,6 +5,7 @@ import stat
 import sys
 import shutil
 
+
 class FileOps(object):
 
     blocksize = 1024*1024
@@ -52,7 +53,7 @@ class FileOps(object):
             desname = filename
         (is_dir, current) = self.dm.get(filename)
         (stats, depth, hsh, time_first, time_last) = current[0]
-        is_dir=is_dir
+        is_dir = is_dir  # unused variable warning
         fmt  = stat.S_IFMT (stats.st_mode)
         mode = stat.S_IMODE(stats.st_mode)
         if   stat.S_ISREG (fmt):
@@ -63,7 +64,8 @@ class FileOps(object):
         elif stat.S_ISDIR (fmt):
             os.makedirs(desname, mode=mode, exist_ok=True)
         elif stat.S_ISLNK (fmt):
-            # Create a temporary file, restore the contents of the link, read it, create the link.
+            # Create a temporary file, restore the contents of the
+            # link, read it, create the link.
             try:
                 os.remove(desname)
             except:
@@ -73,14 +75,24 @@ class FileOps(object):
                 linkdata = f.read()
             #print("linkdata '"+str(linkdata)+"'")
             os.remove(desname)
-            os.symlink(linkdata, desname, target_is_directory=stat.S_ISDIR(fmt))
+            os.symlink(
+                linkdata,
+                desname,
+                target_is_directory=stat.S_ISDIR(fmt))
             pass  #TODO
         elif stat.S_ISSOCK(fmt):
             pass  #TODO
         #TODO Should these be set on the linkee if we can't set the link?
         os.chmod(desname, mode, follow_symlinks=self.fsl_chmod)
-        os.chown(desname, stats.st_uid, stats.st_gid, follow_symlinks=self.fsl_chown)
-        os.utime(desname, ns=(stats.st_atime_ns, stats.st_mtime_ns), follow_symlinks=self.fsl_utime)
+        os.chown(
+            desname,
+            stats.st_uid,
+            stats.st_gid,
+            follow_symlinks=self.fsl_chown)
+        os.utime(
+            desname,
+            ns=(stats.st_atime_ns, stats.st_mtime_ns),
+            follow_symlinks=self.fsl_utime)
         # os.makedirs
         # os.mkfifo
         # os.mknod
@@ -136,7 +148,10 @@ class FileOps(object):
             else:
                 carry = b""
             groups[gnum] += hsh
-            if len(groups) == gnum+1 and len(groups[gnum]) == self.hashfact().hashlen() and not carry:
+            if (
+                    len(groups) == gnum+1 and
+                    len(groups[gnum]) == self.hashfact().hashlen() and
+                    not carry):
                 return gnum, groups[gnum]
             if len(groups[gnum]):
                 carry += self.__put_block(groups[gnum])
@@ -187,7 +202,7 @@ class FileOps(object):
         return hsh
 
 if __name__ == "__main__":
-    import datameta_tree
+#    import datameta_tree
     import datameta_sqlite
 #    import datastore_tree
     import datastore_gdbm
@@ -229,8 +244,11 @@ if __name__ == "__main__":
     for walker in os.walk(".", topdown=False):
         print("restore walker =", walker)
         for f in walker[1]:
-            fo.restore(os.path.join(walker[0], f), os.path.join("..", "testrestore", walker[0], f))
+            fo.restore(
+                os.path.join(walker[0], f),
+                os.path.join("..", "testrestore", walker[0], f))
         for f in walker[2]:
-            fo.restore(os.path.join(walker[0], f), os.path.join("..", "testrestore", walker[0], f))
+            fo.restore(
+                os.path.join(walker[0], f),
+                os.path.join("..", "testrestore", walker[0], f))
     os.chdir("..")
-

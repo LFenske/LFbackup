@@ -3,6 +3,7 @@ abstract super-class for encryption and decryption
 """
 import abc
 
+
 class Crypt(object, metaclass=abc.ABCMeta):
     def __init__(self):
         None

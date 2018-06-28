@@ -3,6 +3,7 @@ abstract super-class for file hashes
 """
 import abc
 
+
 class Hash(object, metaclass=abc.ABCMeta):
     def __init__(self):
         None

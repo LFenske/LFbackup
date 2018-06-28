@@ -3,6 +3,7 @@ abstract super-class for storing data objects
 """
 import abc
 
+
 class DataStore(object, metaclass=abc.ABCMeta):
     def __init__(self):
         pass
@@ -59,7 +60,8 @@ class DataStore(object, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def mark_delete(self):
         """
-        Permanently remove objects that are unmarked and end the process of marking.
+        Permanently remove objects that are unmarked and end the process
+        of marking.
+
         """
         pass
-

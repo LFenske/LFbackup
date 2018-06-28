@@ -3,6 +3,7 @@
 import hashlib
 from hash_base import Hash
 
+
 class Hash_SHA1(Hash):
     def __init__(self):
         super().__init__()

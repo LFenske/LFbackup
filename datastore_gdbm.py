@@ -4,6 +4,7 @@ from datastore_base import DataStore
 
 import dbm.gnu as dbm
 
+
 class DataStore_Gdbm(DataStore):
     """
     Use a GDBM database to store objects.
@@ -90,4 +91,3 @@ if __name__ == "__main__":
 #     assert(not ds.check(key1))
 #     assert(    ds.check(key2))
 #     assert(ds.get(key2) == val2)
-
