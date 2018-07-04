@@ -2,10 +2,10 @@
 
 from compress_base import Compress
 
-import gzip
+import bz2
 
 
-class Compress_Gzip(Compress):
+class Compress_Bz2(Compress):
 
     compresslevel = 9
 
@@ -13,13 +13,13 @@ class Compress_Gzip(Compress):
         super().__init__()
 
     def compress(self, s):
-        return gzip.  compress(s, compresslevel=self.compresslevel)
+        return bz2.  compress(s, compresslevel=self.compresslevel)
 
     def decompress(self, s):
-        return gzip.decompress(s)
+        return bz2.decompress(s)
 
 if __name__ == "__main__":
-    c = Compress_Gzip()
+    c = Compress_Bz2()
     s = b"abcdefghijklmnopqrstuvwxyz"
     en = c.  compress(s)
     de = c.decompress(en)

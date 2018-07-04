@@ -2,24 +2,22 @@
 
 from compress_base import Compress
 
-import gzip
+import lzma
 
 
-class Compress_Gzip(Compress):
-
-    compresslevel = 9
+class Compress_Lzma(Compress):
 
     def __init__(self):
         super().__init__()
 
     def compress(self, s):
-        return gzip.  compress(s, compresslevel=self.compresslevel)
+        return lzma.  compress(s)
 
     def decompress(self, s):
-        return gzip.decompress(s)
+        return lzma.decompress(s)
 
 if __name__ == "__main__":
-    c = Compress_Gzip()
+    c = Compress_Lzma()
     s = b"abcdefghijklmnopqrstuvwxyz"
     en = c.  compress(s)
     de = c.decompress(en)

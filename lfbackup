@@ -50,26 +50,30 @@ ops = {
 
 if __name__ == "__main__":
     import fileops
-#    import datameta_tree
+    import datameta_tree
     import datameta_sqlite
-#    import datastore_tree
+    import datastore_tree
     import datastore_gdbm
-#    import compress_none
+    import compress_none
     import compress_gzip
-#    import crypt_none
+    import compress_lzma
+    import compress_bz2
+    import crypt_none
     import crypt_aes
     import hash_sha1
 
     basepath = "/test2/testtree"
     key      = b"12345678"
 
-    #dm       = datameta_tree.DataMeta_Tree(basepath)
-    dm       = datameta_sqlite.DataMeta_Sqlite(basepath+".db")
-    #ds       = datastore_tree.DataStore_Tree(basepath)
-    ds       = datastore_gdbm.DataStore_Gdbm(basepath+".gdbm")
-#     compress = compress_none.Compress_None()
-#     crypt    = crypt_none.Crypt_None(key)
-    compress = compress_gzip.Compress_Gzip()
+    dm       = datameta_tree.DataMeta_Tree(basepath)
+    #dm       = datameta_sqlite.DataMeta_Sqlite(basepath+".db")
+    ds       = datastore_tree.DataStore_Tree(basepath)
+    #ds       = datastore_gdbm.DataStore_Gdbm(basepath+".gdbm")
+#    compress = compress_none.Compress_None()
+#    compress = compress_gzip.Compress_Gzip()
+#    compress = compress_lzma.Compress_Lzma()
+    compress = compress_bz2.Compress_Bz2()
+#    crypt    = crypt_none.Crypt_None(key)
     crypt    = crypt_aes.Crypt_AES(key)
     hashfact = hash_sha1.Hash_SHA1
     fo = fileops.FileOps(dm, ds, compress, crypt, hashfact)
