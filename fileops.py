@@ -183,7 +183,7 @@ class FileOps(object):
         hashpointers = [0] * (depth+1)
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, "wb") as f:  #TODO pass f in
-            if depth == 0:
+            if hsh == 0:
                 # 0-length file
                 return
             while True:

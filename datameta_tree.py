@@ -41,8 +41,8 @@ class DataMeta_Tree(DataMeta_Base):
             return None
         print("path =", path)
         with open(path, "rb") as f:
-            (stats, depth, hsh) = pickle.load(f)
-        return (is_dir, stats, depth, hsh)
+            current = pickle.load(f)
+        return (is_dir, current)
 
     def __paths(self, filename):
         fdir  = os.path.join(self.basepath, self.filepath)

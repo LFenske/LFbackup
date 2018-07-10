@@ -65,14 +65,14 @@ if __name__ == "__main__":
     basepath = "/test2/testtree"
     key      = b"12345678"
 
-    dm       = datameta_tree.DataMeta_Tree(basepath)
-    #dm       = datameta_sqlite.DataMeta_Sqlite(basepath+".db")
+    #dm       = datameta_tree.DataMeta_Tree(basepath)
+    dm       = datameta_sqlite.DataMeta_Sqlite(basepath+".db")
     ds       = datastore_tree.DataStore_Tree(basepath)
     #ds       = datastore_gdbm.DataStore_Gdbm(basepath+".gdbm")
 #    compress = compress_none.Compress_None()
-#    compress = compress_gzip.Compress_Gzip()
+    compress = compress_gzip.Compress_Gzip()
 #    compress = compress_lzma.Compress_Lzma()
-    compress = compress_bz2.Compress_Bz2()
+#    compress = compress_bz2.Compress_Bz2()
 #    crypt    = crypt_none.Crypt_None(key)
     crypt    = crypt_aes.Crypt_AES(key)
     hashfact = hash_sha1.Hash_SHA1
