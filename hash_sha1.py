@@ -5,12 +5,13 @@ from hash_base import Hash
 
 
 class Hash_SHA1(Hash):
+
     def __init__(self):
         super().__init__()
         self.hashmethod = hashlib.sha1()
 
     def hashlen(self):
-        return 20
+        return self.hashmethod.digest_size
 
     def update(self, s):
         self.hashmethod.update(s)

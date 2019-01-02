@@ -13,8 +13,8 @@ class DataMeta_Tree(DataMeta_Base):
     dirsuff  = ".d"
     dirinfo  = "info"
 
-    def __init__(self, dbfilename):
-        self.basepath = dbfilename
+    def __init__(self, dbname):
+        self.basepath = dbname
 
     def put(self, filename, is_dir, stats, depth, hsh):
         (fdir, fpath, ddir, dpath) = self.__paths(filename)

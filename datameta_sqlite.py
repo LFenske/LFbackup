@@ -11,8 +11,8 @@ import time
 
 class DataMeta_Sqlite(DataMeta_Base):
 
-    def __init__(self, dbfilename):
-        self.basepath = dbfilename
+    def __init__(self, dbname):
+        self.basepath = dbname
         self.conn = sqlite3.connect(self.basepath)
         curs = self.conn.cursor()
         curs.execute("""
