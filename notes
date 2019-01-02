@@ -38,4 +38,5 @@ plugin types
     three level file system tree with 256 per level, file name is hash
     Amazon S3 object store
     Google Cloud Storage: ?
+    gdbm
 

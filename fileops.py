@@ -215,15 +215,15 @@ if __name__ == "__main__":
     basepath = "/tmp/testtree"
     key      = b"12345678"
 
+    hashfact = hash_sha1.Hash_SHA1
     #dm       = datameta_tree.DataMeta_Tree(basepath)
     dm       = datameta_sqlite.DataMeta_Sqlite(basepath+".db")
     #ds       = datastore_tree.DataStore_Tree(basepath)
-    ds       = datastore_gdbm.DataStore_Gdbm(basepath+".gdbm")
+    ds       = datastore_gdbm.DataStore_Gdbm(basepath+".gdbm", hashfact)
 #     compress = compress_none.Compress_None()
 #     crypt    = crypt_none.Crypt_None(key)
     compress = compress_gzip.Compress_Gzip()
     crypt    = crypt_aes.Crypt_AES(key)
-    hashfact = hash_sha1.Hash_SHA1
     fo = FileOps(dm, ds, compress, crypt, hashfact)
 
     try:

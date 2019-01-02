@@ -39,7 +39,7 @@ def op_list():
 
 
 def usage():
-    print("usage:", sys.argv[0])
+    print("usage:", sys.argv[0], '|'.join(ops))
     pass
 
 ops = {
@@ -62,20 +62,20 @@ if __name__ == "__main__":
     import crypt_aes
     import hash_sha1
 
-    basepath = "/test2/testtree"
+    basepath = "/test2/test"
     key      = b"12345678"
 
+    hashfact = hash_sha1.Hash_SHA1
     #dm       = datameta_tree.DataMeta_Tree(basepath)
-    dm       = datameta_sqlite.DataMeta_Sqlite(basepath+".db")
-    ds       = datastore_tree.DataStore_Tree(basepath)
-    #ds       = datastore_gdbm.DataStore_Gdbm(basepath+".gdbm")
-#    compress = compress_none.Compress_None()
-    compress = compress_gzip.Compress_Gzip()
+    dm       = datameta_sqlite.DataMeta_Sqlite(basepath+"/db")
+    #ds       = datastore_tree.DataStore_Tree(basepath)
+    ds       = datastore_gdbm.DataStore_Gdbm(basepath+"/gdbm", hashfact)
+    compress = compress_none.Compress_None()
+#    compress = compress_gzip.Compress_Gzip()
 #    compress = compress_lzma.Compress_Lzma()
 #    compress = compress_bz2.Compress_Bz2()
-#    crypt    = crypt_none.Crypt_None(key)
-    crypt    = crypt_aes.Crypt_AES(key)
-    hashfact = hash_sha1.Hash_SHA1
+    crypt    = crypt_none.Crypt_None(key)
+#    crypt    = crypt_aes.Crypt_AES(key)
     fo = fileops.FileOps(dm, ds, compress, crypt, hashfact)
 
     if len(sys.argv) < 2 or sys.argv[1] not in ops:
