@@ -198,14 +198,16 @@ class FileOps(object):
         h = self.hashfact()
         h.update(bufe)
         hsh = h.digest()
-        self.ds.put(hsh, bufe)
+        if not self.ds.check(hsh):
+            self.ds.put(hsh, bufe)
         return hsh
 
 if __name__ == "__main__":
 #    import datameta_tree
     import datameta_sqlite
 #    import datastore_tree
-    import datastore_gdbm
+#    import datastore_gdbm
+    import datastore_s3
 #    import compress_none
 #    import crypt_none
     import compress_gzip
@@ -219,7 +221,8 @@ if __name__ == "__main__":
     #dm       = datameta_tree.DataMeta_Tree(basepath)
     dm       = datameta_sqlite.DataMeta_Sqlite(basepath+".db")
     #ds       = datastore_tree.DataStore_Tree(basepath)
-    ds       = datastore_gdbm.DataStore_Gdbm(basepath+".gdbm", hashfact)
+    #ds       = datastore_gdbm.DataStore_Gdbm(basepath+".gdbm", hashfact)
+    ds       = datastore_s3.DataStore_S3("test.ops-", hashfact)
 #     compress = compress_none.Compress_None()
 #     crypt    = crypt_none.Crypt_None(key)
     compress = compress_gzip.Compress_Gzip()
