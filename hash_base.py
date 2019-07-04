@@ -51,7 +51,7 @@ class Hash(object, metaclass=abc.ABCMeta):
         # sum into list of numbers
         s = []  # list of numbers
         for i in range(len(a), 0, -1):
-            (q, r) = divmod(ord(a[i-1]) + ord(b[i-1]) + carry, 256)
+            (q, r) = divmod(a[i-1] + b[i-1] + carry, 256)
             s.insert(0, r)
             carry = q
         # "carry" holds the MSB
@@ -59,8 +59,8 @@ class Hash(object, metaclass=abc.ABCMeta):
         v = []  # list of characters
         for i in range(len(a)):
             (q, r) = divmod(carry*256 + s[i], 2)
-            v.append(chr(q))
+            v.append(q)
             carry = r
         # Convert back to string.
-        return "".join(v)
+        return bytes(v)
 

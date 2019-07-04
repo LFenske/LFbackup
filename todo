@@ -1,0 +1,10 @@
+use parent fields in datameta_sqlite -- reference filename off parent
+parallelize
+datastore as sql or key-value database? Berkeley DB (Oracle), Google DBM, redis
+fix datameta_tree.put like datameta_sqlite.put
+
+use local cache, new store in front of other store
+need background programs: flush cache, GC store
+need database with object key and where it is
+multiple stores
+change datastore_s3 to not use $HOME for credentials

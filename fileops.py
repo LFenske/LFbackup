@@ -108,28 +108,31 @@ class FileOps(object):
         Return depth, hash.
         """
         groups = []
-        with open(filename, "rb") as f:  #TODO pass in f instead of filename
-            while True:
-                buf = f.read(self.blocksize)
-                if buf:
-                    hsh = self.__put_block(buf)
-                else:
-                    break
-                gnum = 0
+        try:
+            with open(filename, "rb") as f:  #TODO pass in f instead of filename
                 while True:
-                    if len(groups) <= gnum:
-                        groups.append(b"")
-                    if len(groups[gnum]) + len(hsh) > self.blocksize:
-                        carry = self.__put_block(groups[gnum])
-                        groups[gnum] = b""
-                    else:
-                        carry = None
-                    groups[gnum] += hsh
-                    if carry:
-                        hsh = carry
-                        gnum += 1
+                    buf = f.read(self.blocksize)
+                    if buf:
+                        hsh = self.__put_block(buf)
                     else:
                         break
+                    gnum = 0
+                    while True:
+                        if len(groups) <= gnum:
+                            groups.append(b"")
+                        if len(groups[gnum]) + len(hsh) > self.blocksize:
+                            carry = self.__put_block(groups[gnum])
+                            groups[gnum] = b""
+                        else:
+                            carry = None
+                        groups[gnum] += hsh
+                        if carry:
+                            hsh = carry
+                            gnum += 1
+                        else:
+                            break
+        except Exception as e:
+            print("EXCEPTION", e)
         # flush
         gnum = 0
         hsh = b""

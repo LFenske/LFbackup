@@ -12,8 +12,8 @@ class DataStore_Gdbm(DataStore):
     Use a GDBM database to store objects.
     """
 
-    rebalance = True
-    max_db_size = 100*1000*1000
+    rebalance = False
+    max_db_size = 1500*1000*1000*1000
 
     def __init__(self, dbname, hashfact):
         super().__init__()
@@ -29,8 +29,8 @@ class DataStore_Gdbm(DataStore):
 
         # Are there any databases yet?  If not, create one.
         if len(list(path.iterdir())) == 0:
-            db = self._create_db(0, hashfact.min(), hashfact.max())
-            db.close()  # will reopen later
+            e = self._create_db(0, hashfact.min(), hashfact.max())
+            e["db"].close()  # will reopen later
 
         # Open all databases in order starting from the highest level.
         self.dbs = []
@@ -46,15 +46,22 @@ class DataStore_Gdbm(DataStore):
             self.dbs.append(e)
 
     def _create_db(self, level, minhash, maxhash):
+        #print("create_db: level =", level, "minhash =", minhash, " maxhash =", maxhash)
         level = str(level)
         filename = self.basepath + "/" + level + "-" + self.hashfact.hexify(minhash)[0:4] + "-" + self.hashfact.hexify(maxhash)[0:4]
         print("filename =", filename)
+        e = {}
         db = dbm.open(filename, "cuf")
         db["filename"] = filename
         db["level"   ] = level
         db["minhash" ] = minhash
         db["maxhash" ] = maxhash
-        return db
+        e["db"      ] = db
+        e["filename"] = db["filename"]
+        e["level"   ] = db["level"   ]
+        e["minhash" ] = db["minhash" ]
+        e["maxhash" ] = db["maxhash" ]
+        return e
 
     def get(self, key1):
         first = True
@@ -79,9 +86,10 @@ class DataStore_Gdbm(DataStore):
                     # This db has gotten too big: split it.
                     # Find average of minhash and maxhash as split point.
                     splitpoint = self.hashfact.split_range(e["minhash"], e["maxhash"])
+                    #print("splitpoint =", splitpoint)
                     # Create db from minhash-avg and from avg-maxhash, increasing level.
-                    self.dbs.insert(0, self._create_db(e["level"]+1, e["minhash"], splitpoint))
-                    self.dbs.insert(0, self._create_db(e["level"]+1, splitpoint, e["maxhash"]))
+                    self.dbs.insert(0, self._create_db(int(e["level"])+1, e["minhash"], splitpoint))
+                    self.dbs.insert(0, self._create_db(int(e["level"])+1, splitpoint, e["maxhash"]))
                     # Call put to insert into new db.
                     self.put(key1, val1)
                     return
