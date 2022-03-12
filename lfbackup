@@ -17,20 +17,23 @@ def op_backup():
             print(count)
             count += 1
             fo.backup(f)
+            if count % 1000 == 0:
+                dm.commit()
     else:
         for f in sys.argv[1:]:
             fo.backup(f)
+    dm.commit()
 
 
 def op_restore():
     desdir = sys.argv[1]
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         for f in sys.stdin:
             f = f.rstrip("\n")
-            fo.restore(f, os.path.join(desdir, f))
+            fo.restore(f, desdir+'/'+f)
     else:
         for f in sys.argv[2:]:
-            fo.restore(f, os.path.join(desdir, f))
+            fo.restore(f, desdir+'/'+f)
     pass
 
 
@@ -54,7 +57,7 @@ if __name__ == "__main__":
     import datameta_sqlite
     import datastore_tree
     import datastore_gdbm
-    #import datastore_s3
+    import datastore_s3
     import compress_none
     import compress_gzip
     import compress_lzma
@@ -63,21 +66,21 @@ if __name__ == "__main__":
     import crypt_aes
     import hash_sha1
 
-    basepath = "/test2/test"
+    basepath = "/tmp/lfbackup-meta"
     key      = b"12345678"
 
     hashfact = hash_sha1.Hash_SHA1
     #dm       = datameta_tree.DataMeta_Tree(basepath)
     dm       = datameta_sqlite.DataMeta_Sqlite(basepath+"/db")
     #ds       = datastore_tree.DataStore_Tree(basepath)
-    ds       = datastore_gdbm.DataStore_Gdbm(basepath+"/gdbm", hashfact)
-    #ds       = datastore_s3.DataStore_S3("test.lfbackup-", hashfact)
-#    compress = compress_none.Compress_None()
-    compress = compress_gzip.Compress_Gzip()
+    #ds       = datastore_gdbm.DataStore_Gdbm(basepath+"/gdbm", hashfact)
+    ds       = datastore_s3.DataStore_S3("test.lfbackup/", hashfact)
+    compress = compress_none.Compress_None()
+#    compress = compress_gzip.Compress_Gzip()
 #    compress = compress_lzma.Compress_Lzma()
 #    compress = compress_bz2.Compress_Bz2()
-#    crypt    = crypt_none.Crypt_None(key)
-    crypt    = crypt_aes.Crypt_AES(key)
+    crypt    = crypt_none.Crypt_None(key)
+#    crypt    = crypt_aes.Crypt_AES(key)
     fo = fileops.FileOps(dm, ds, compress, crypt, hashfact)
 
     if len(sys.argv) < 2 or sys.argv[1] not in ops:

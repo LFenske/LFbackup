@@ -13,7 +13,8 @@ class DataStore_Gdbm(DataStore):
     """
 
     rebalance = False
-    max_db_size = 1500*1000*1000*1000
+    #max_db_size = 1500*1000*1000*1000
+    max_db_size = 1*1000*1000*1000
 
     def __init__(self, dbname, hashfact):
         super().__init__()

@@ -63,7 +63,7 @@ class DataMeta_Sqlite(DataMeta_Base):
                     pickle.dumps(current)
                 )
             )
-        self.conn.commit()
+#        self.conn.commit()
 
     def get(self, filename):
         curs = self.conn.cursor()
@@ -74,6 +74,9 @@ class DataMeta_Sqlite(DataMeta_Base):
         current = pickle.loads(d[0])
         is_dir  = stat.S_ISDIR(current[0][0].st_mode)
         return (is_dir, current)
+
+    def commit(self):
+        self.conn.commit()
 
 if __name__ == "__main__":
     dm = DataMeta_Sqlite("/tmp/test.db")

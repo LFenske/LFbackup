@@ -83,16 +83,16 @@ class FileOps(object):
         elif stat.S_ISSOCK(fmt):
             pass  #TODO
         #TODO Should these be set on the linkee if we can't set the link?
+        os.utime(
+            desname,
+            ns=(stats.st_atime_ns, stats.st_mtime_ns),
+            follow_symlinks=self.fsl_utime)
         os.chmod(desname, mode, follow_symlinks=self.fsl_chmod)
         os.chown(
             desname,
             stats.st_uid,
             stats.st_gid,
             follow_symlinks=self.fsl_chown)
-        os.utime(
-            desname,
-            ns=(stats.st_atime_ns, stats.st_mtime_ns),
-            follow_symlinks=self.fsl_utime)
         # os.makedirs
         # os.mkfifo
         # os.mknod
@@ -211,8 +211,8 @@ if __name__ == "__main__":
 #    import datastore_tree
 #    import datastore_gdbm
     import datastore_s3
-#    import compress_none
-#    import crypt_none
+    import compress_none
+    import crypt_none
     import compress_gzip
     import crypt_aes
     import hash_sha1
@@ -225,7 +225,7 @@ if __name__ == "__main__":
     dm       = datameta_sqlite.DataMeta_Sqlite(basepath+".db")
     #ds       = datastore_tree.DataStore_Tree(basepath)
     #ds       = datastore_gdbm.DataStore_Gdbm(basepath+".gdbm", hashfact)
-    ds       = datastore_s3.DataStore_S3("test.ops-", hashfact)
+    ds       = datastore_s3.DataStore_S3("test.ops/", hashfact)
 #     compress = compress_none.Compress_None()
 #     crypt    = crypt_none.Crypt_None(key)
     compress = compress_gzip.Compress_Gzip()
@@ -246,6 +246,7 @@ if __name__ == "__main__":
         for f in walker[2]:
             fo.backup(os.path.join(walker[0], f))
             pass
+    dm.commit()
 
     for walker in os.walk(".", topdown=False):
         print("restore walker =", walker)

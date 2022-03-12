@@ -8,7 +8,7 @@ import botocore
 
 class DataStore_S3(DataStore):
     """
-    Use a GDBM database to store objects.
+    Use an S3 to store objects.
     """
 
     def _mapkey(self, key):
@@ -17,7 +17,13 @@ class DataStore_S3(DataStore):
     def __init__(self, keyprefix, hashfact):
         self.keyprefix = keyprefix
         self.hashfact  = hashfact
-        self.s3 = boto3.resource("s3")
+#        self.s3 = boto3.resource("s3")
+        self.s3 = boto3.resource(
+            "s3",
+            endpoint_url="http://localhost:9000",
+            aws_access_key_id=    "minioadmin",
+            aws_secret_access_key="minioadmin",
+        )
         self.bucket = "lfbackup-store"
 
     def get(self, key1):
@@ -70,7 +76,7 @@ if __name__ == "__main__":
     import hash_sha1
     Hash_f = hash_sha1.Hash_SHA1
 
-    ds = DataStore_S3("test.s3-")
+    ds = DataStore_S3("test.s3-", Hash_f)
     h = Hash_f()
     h.update(b"abcdefghi")
     key1 = h.digest()
