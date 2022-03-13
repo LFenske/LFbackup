@@ -1,55 +1,28 @@
 #!/usr/bin/env python3
 
 import gzip
-from collections import deque
 
 from coroutine_decorator import *
+from buffer import Buffer
 
 class Compress_Gzip(object):
 
-    class Buffer(object):
-        def __init__(self):
-            self.__buf = deque()
-            self.__size = 0
-        def __len__(self):
-            return self.__size
-        def write(self, data):
-            self.__buf.append(data)
-            self.__size += len(data)
-        def read(self, size=-1):
-            if size < 0: size = self.__size
-            ret_list = []
-            while size > 0 and len(self.__buf):
-                s = self.__buf.popleft()
-                size -= len(s)
-                ret_list.append(s)
-            if size < 0:
-                ret_list[-1], remainder = retlist[-1][:size], ret_list[-1][size:]
-                self.__buf.appendleft(remainder)
-            ret = ''.join(ret_list)
-            self.__size -= len(ret)
-            return ret
-        def flush(self):
-            pass
-        def close(self):
-            pass
-
-
-    class GzipCompressReadStream(object):
-        def __init__(self, fileobj):
-            self.__input = fileobj
-            self.__buf = Buffer()
-            self.__gzip = gzip.GzipFile(None, mode='wb', fileobj=self.__buf)
-        def read(self, size=-1):
-            while size < 0 or len(self.__buf) < size:
-                s = self.__input.read(CHUNK)
-                if not s:
-                    self.__gzip.close()
-                    break
-                self.__gzip.write(s)
-            return self.__buf.read(size)
-        
     @decorator.coroutine
     def compress(pipe):
-        pass
-    
+        buffer = Buffer()
+        gzipper = gzip.GzipFile(None, mode='wb', fileobj=buffer)
+        while True:
+            try:
+                datain = yield
+            except GeneratorExit:
+                # preceding task in pipe is done and closed us
+                break
+            gzipper.write(datain)   # send the received data to gzip
+            dataout = buffer.read() # pull out whatever results we have so far
+            pipe.send(dataout)      # push it through the pipe
+
+        gzipper.close()          # we're all done now, let gzip finalize
+        dataout = buffer.read()
+        pipe.send(dataout)
+        pipe.close()             # tell downstream that we're done
+
