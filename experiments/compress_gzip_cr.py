@@ -14,15 +14,18 @@ class Compress_Gzip(object):
         while True:
             try:
                 datain = yield
+#                print("received %d bytes" % len(datain))
             except GeneratorExit:
                 # preceding task in pipe is done and closed us
                 break
             gzipper.write(datain)   # send the received data to gzip
             dataout = buffer.read() # pull out whatever results we have so far
             pipe.send(dataout)      # push it through the pipe
+#            print("sent %d bytes" % len(dataout))
 
         gzipper.close()          # we're all done now, let gzip finalize
         dataout = buffer.read()
         pipe.send(dataout)
+#        print("sent %d bytes" % len(dataout))
         pipe.close()             # tell downstream that we're done
 

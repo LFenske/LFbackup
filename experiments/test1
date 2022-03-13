@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
+import sys
+
 from file_rw import *
 from coroutine_decorator import *
 
-file_reader("../fileops.py",
+file_reader(sys.argv[1],
             file_writer("test1.out"))
 
